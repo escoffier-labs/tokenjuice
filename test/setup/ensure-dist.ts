@@ -68,6 +68,7 @@ export function resolveBuildInvocation(options: {
   execPath: string;
   npmExecPath?: string | undefined;
   platform: NodeJS.Platform;
+  commandInterpreter?: string | undefined;
 }): { executable: string; args: string[] } {
   if (options.npmExecPath) {
     return {
@@ -76,8 +77,15 @@ export function resolveBuildInvocation(options: {
     };
   }
 
+  if (options.platform === "win32") {
+    return {
+      executable: options.commandInterpreter ?? "cmd.exe",
+      args: ["/d", "/s", "/c", "pnpm.cmd", "run", "build"],
+    };
+  }
+
   return {
-    executable: options.platform === "win32" ? "pnpm.cmd" : "pnpm",
+    executable: "pnpm",
     args: ["run", "build"],
   };
 }
@@ -90,6 +98,7 @@ export default function setup(): void {
     execPath: process.execPath,
     npmExecPath: process.env.npm_execpath,
     platform: process.platform,
+    commandInterpreter: process.env.ComSpec,
   });
   execFileSync(invocation.executable, invocation.args, { stdio: "inherit", cwd: process.cwd() });
 }

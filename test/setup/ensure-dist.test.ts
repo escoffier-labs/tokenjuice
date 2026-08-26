@@ -112,7 +112,21 @@ describe("resolveBuildInvocation", () => {
       resolveBuildInvocation({
         execPath: "C:\\Program Files\\nodejs\\node.exe",
         platform: "win32",
+        commandInterpreter: "C:\\Windows\\System32\\cmd.exe",
       }),
-    ).toEqual({ executable: "pnpm.cmd", args: ["run", "build"] });
+    ).toEqual({
+      executable: "C:\\Windows\\System32\\cmd.exe",
+      args: ["/d", "/s", "/c", "pnpm.cmd", "run", "build"],
+    });
+
+    expect(
+      resolveBuildInvocation({
+        execPath: "C:\\Program Files\\nodejs\\node.exe",
+        platform: "win32",
+      }),
+    ).toEqual({
+      executable: "cmd.exe",
+      args: ["/d", "/s", "/c", "pnpm.cmd", "run", "build"],
+    });
   });
 });
