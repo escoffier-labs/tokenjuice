@@ -29,8 +29,8 @@ Most of tokenjuice (the reducer engine, the host integration matrix, the CLI sur
 ## Local dev
 
 ```bash
-git clone https://github.com/escoffier-labs/tokenjuice.git
-cd tokenjuice
+git clone https://github.com/escoffier-labs/token-glace.git
+cd token-glace
 pnpm install
 pnpm build
 pnpm verify        # lint + circular check + typecheck + tests
