@@ -39,4 +39,22 @@ describe("Token Glace branding", () => {
     expect(readme).toContain("`token-glace --help`");
     expect(readme).not.toContain("\u{1F9C3}");
   });
+
+  it("runs required pull_request checks on every path", async () => {
+    const ci = await readFile(".github/workflows/ci.yml", "utf8");
+    const pullRequest = ci.split("pull_request:")[1]?.split("jobs:")[0] ?? "";
+
+    expect(pullRequest).not.toMatch(/paths-ignore:/);
+  });
+
+  it("takes the pnpm version from package.json packageManager", async () => {
+    const packageJson = JSON.parse(await readFile("package.json", "utf8")) as {
+      packageManager?: string;
+    };
+    const ci = await readFile(".github/workflows/ci.yml", "utf8");
+
+    expect(packageJson.packageManager).toBe("pnpm@10.34.5");
+    expect(ci).toContain("pnpm/action-setup@v6.0.10");
+    expect(ci).not.toMatch(/^\s+version:\s+/m);
+  });
 });

@@ -10,11 +10,6 @@ on:
       - 'LICENSE'
       - '.gitignore'
   pull_request:
-    paths-ignore:
-      - 'docs/**'
-      - '*.md'
-      - 'LICENSE'
-      - '.gitignore'
 
 jobs:
   quality:
@@ -30,7 +25,6 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@v6.0.10
         with:
-          version: 10.34.5
           run_install: false
 
       - name: Setup Node
@@ -57,7 +51,6 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@v6.0.10
         with:
-          version: 10.34.5
           run_install: false
 
       - name: Setup Node
