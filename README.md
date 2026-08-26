@@ -77,7 +77,7 @@ brew tap vincentkoc/tap
 brew install tokenjuice
 ```
 
-To run **Token Glace** from this fork's tree, install from source:
+To run **Token Glace** from this fork's tree, install from source. Requires Node >=22.12.0 and pnpm 10.34.5 via Corepack.
 
 ```bash
 git clone https://github.com/escoffier-labs/token-glace.git

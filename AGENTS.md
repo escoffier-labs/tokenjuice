@@ -48,7 +48,7 @@ For non-trivial code changes, run `.agents/skills/autoreview/scripts/autoreview 
 
 ## Brigade work loop
 
-Start a session with `brigade work brief --target .`. Run checks through `brigade work verify run --target . --command <TEST>` so the exit code is stored as a receipt. Capture the outcome against the skill or card that did the work only when the outcome ledger is healthy. Finish durable knowledge with a memory handoff. A corrupt or half-fed ledger is not a working capture path; inspect it with `brigade outcome doctor` before anyone repairs it.
+When this checkout has local Brigade wiring (a `.brigade/` directory, or `brigade status --target .` succeeds), start a session with `brigade work brief --target .`. Run checks through `brigade work verify run --target . --command "<test>"` so the exit code is stored as a receipt. Capture the outcome against the skill or card that did the work only when the outcome ledger is healthy. Finish durable knowledge with a memory handoff. Brigade wiring and memory handoffs in this repository are machine-local. A corrupt or half-fed ledger is not a working capture path; inspect it with `brigade outcome doctor` before anyone repairs it.
 
 ## Further reading
 
@@ -66,8 +66,8 @@ In-repo docs (link, don't duplicate):
 
 Releases are tag-driven and should stay aligned with `package.json`.
 
-1. Bump `package.json` to the target version (for example `0.6.0`).
-2. Run `pnpm release:local` to verify tests, build output, release tarball, checksums, and Homebrew formula generation.
+1. Bump `package.json` and the static registry badge in `README.md` to the target version (for example `0.6.0`).
+2. Run `pnpm release:local` (`pnpm verify` then `pnpm verify:package`, including publint contracts, the release tarball, checksums, and Homebrew formula).
 3. Commit the version bump and any required workflow fixes to `main`, then push `main`.
 4. Create and push an annotated tag: `git tag -a v0.6.0 -m "v0.6.0"` and `git push origin v0.6.0`.
 5. Watch the `Release` GitHub Actions workflow and confirm the GitHub release is published with the `.tar.gz`, `.deb`, `.rpm`, `sha256sums.txt`, and `token-glace.rb` assets.
