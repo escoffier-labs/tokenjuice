@@ -58,11 +58,11 @@ token-glace wrap --raw -- seq 1 6000   # full output when you need it
 
 ## Integrations
 
-Token Glace installs a thin hook, extension, rule, or guidance file into your client; all of them call the same shared reducer. First-class clients include [Claude Code](https://docs.anthropic.com/en/docs/claude-code), [Codex CLI](https://github.com/openai/codex), [Cursor](https://cursor.com/docs/hooks), [GitHub Copilot CLI](https://github.com/github/copilot-cli), [OpenClaw](https://openclaw.ai/), [OpenCode](https://opencode.ai/), and [pi](https://github.com/badlogic/pi-mono/tree/main/packages/coding-agent), with 100+ more clients in beta.
+Token Glace installs a thin hook, extension, rule, or guidance file into your client; all of them call the same shared reducer. First-class clients include [Claude Code](https://docs.anthropic.com/en/docs/claude-code), [Codex CLI](https://github.com/openai/codex), [Cursor](https://cursor.com/docs/hooks), [GitHub Copilot CLI](https://github.com/github/copilot-cli), [OpenClaw](https://openclaw.ai/), [OpenCode](https://opencode.ai/), and [pi](https://github.com/badlogic/pi-mono/tree/main/packages/coding-agent). The matrix is 100 integrations: 10 first-class clients and 90 beta presets.
 
 See **[docs/integrations.md](docs/integrations.md)** for the full client list, each install command, and the hook file it writes.
 
-## Install
+## Install from source
 
 The `tokenjuice` name on npm and the `vincentkoc/tap` Homebrew tap install the **upstream** build by Vincent Koc. To install upstream:
 
@@ -181,7 +181,7 @@ This repository is a fork of [vincentkoc/tokenjuice](https://github.com/vincentk
 - tunes the agent-facing output for safety and signal: a neutral, non-instructional compaction footer (no "treat as authoritative / do not re-run / proceed" directives), the same neutral wording in the host-instruction guidance, and a non-mutating Claude Code `PostToolUse` adapter with a 16384-character size gate; [PreToolUse wrapping remains opt-in](docs/claude-code-integration.md)
 - retains Vincent Koc's copyright and the full MIT permission notice in [LICENSE](LICENSE), with a second copyright line added alongside, and keeps the upstream credit throughout this README
 
-The `tokenjuice` npm package and the `vincentkoc/tap` formula install upstream's build; run this fork [from source](#install) as `token-glace`. Contributions are welcome here, and improvements that are not fork-specific may also be offered upstream to [vincentkoc/tokenjuice](https://github.com/vincentkoc/tokenjuice). See [CONTRIBUTING.md](CONTRIBUTING.md).
+The `tokenjuice` npm package and the `vincentkoc/tap` formula install upstream's build; run this fork [from source](#install-from-source) as `token-glace`. Contributions are welcome here, and improvements that are not fork-specific may also be offered upstream to [vincentkoc/tokenjuice](https://github.com/vincentkoc/tokenjuice). See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Adapter JSON
 
