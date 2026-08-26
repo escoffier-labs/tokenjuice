@@ -22,6 +22,14 @@ describe("Token Glace branding", () => {
     });
   });
 
+  it("requires a supported Node runtime", async () => {
+    const packageJson = JSON.parse(await readFile("package.json", "utf8")) as {
+      engines?: { node?: string };
+    };
+
+    expect(packageJson.engines?.node).toBe(">=22.12.0");
+  });
+
   it("presents Token Glace in the README without the old juicebox emoji", async () => {
     const readme = await readFile("README.md", "utf8");
 

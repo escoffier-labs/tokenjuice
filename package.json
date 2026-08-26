@@ -45,7 +45,7 @@
     "SECURITY.md"
   ],
   "engines": {
-    "node": ">=20"
+    "node": ">=22.12.0"
   },
   "scripts": {
     "analyze:codex-logs": "node scripts/analyze-codex-logs.mjs",
