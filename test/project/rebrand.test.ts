@@ -42,9 +42,10 @@ describe("Token Glace branding", () => {
 
   it("runs required pull_request checks on every path", async () => {
     const ci = await readFile(".github/workflows/ci.yml", "utf8");
-    const pullRequest = ci.split("pull_request:")[1]?.split("jobs:")[0] ?? "";
+    const pullRequest = ci.match(/^  pull_request:\s*\n((?: {4}.*\n?)*)/m);
 
-    expect(pullRequest).not.toMatch(/paths-ignore:/);
+    expect(pullRequest).not.toBeNull();
+    expect(pullRequest?.[1] ?? "").not.toMatch(/^\s+(?:paths|paths-ignore):/m);
   });
 
   it("takes the pnpm version from package.json packageManager", async () => {
