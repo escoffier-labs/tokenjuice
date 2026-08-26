@@ -11,7 +11,10 @@ import { join } from "node:path";
 const CLI_ENTRY_SEGMENTS = ["dist", "cli", "main.js"] as const;
 
 const BUILD_INPUT_FILES = [
+  "package.json",
+  "pnpm-lock.yaml",
   "tsconfig.json",
+  "scripts/clean-dist.mjs",
   "scripts/generate-builtin-rules.mjs",
   "scripts/build-pi-runtime.mjs",
   "scripts/build-opencode-runtime.mjs",
@@ -61,9 +64,32 @@ export function distNeedsRebuild(root: string): boolean {
   return collectBuildInputs(root).some((input) => statSync(input).mtimeMs > entryMtime);
 }
 
+export function resolveBuildInvocation(options: {
+  execPath: string;
+  npmExecPath?: string | undefined;
+  platform: NodeJS.Platform;
+}): { executable: string; args: string[] } {
+  if (options.npmExecPath) {
+    return {
+      executable: options.execPath,
+      args: [options.npmExecPath, "run", "build"],
+    };
+  }
+
+  return {
+    executable: options.platform === "win32" ? "pnpm.cmd" : "pnpm",
+    args: ["run", "build"],
+  };
+}
+
 export default function setup(): void {
   if (!distNeedsRebuild(process.cwd())) {
     return;
   }
-  execFileSync("pnpm", ["run", "build"], { stdio: "inherit", cwd: process.cwd() });
+  const invocation = resolveBuildInvocation({
+    execPath: process.execPath,
+    npmExecPath: process.env.npm_execpath,
+    platform: process.platform,
+  });
+  execFileSync(invocation.executable, invocation.args, { stdio: "inherit", cwd: process.cwd() });
 }
