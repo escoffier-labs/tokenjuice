@@ -2,11 +2,11 @@
 
 ## Project Structure & Module Organization
 
-`tokenjuice` is a TypeScript CLI/library. Main source lives in `src/`:
+`token-glace` is a TypeScript CLI/library (the `tokenjuice` launcher still ships as a legacy alias). Main source lives in `src/`:
 
 - `src/cli/` contains the CLI entrypoint.
 - `src/core/` contains shared reducers, rule loading, and other host-agnostic logic.
-- `src/hosts/` contains host-specific integrations (`codex/`, `claude-code/`, `cursor/`, `pi/`, `opencode/`, `openclaw/`) plus shared hook helpers under `shared/`.
+- `src/hosts/` contains one adapter per client (first-class plus beta presets) plus shared hook helpers under `shared/`.
 - `src/rules/` contains built-in JSON rules and fixtures.
 
 Tests live in `test/` and mirror the source layout (`test/core/`, `test/hosts/`, `test/hosts/shared/`). Supporting docs live in `docs/`, packaging files in `packaging/`, and utility scripts in `scripts/`. `dist/`, `release/`, and `src/core/builtin-rules.generated.ts` are generated outputs; do not hand-edit them.
@@ -36,7 +36,7 @@ Keep generated files out of manual edits. If you change built-in rule data, rely
 
 ## Host integrations
 
-Every post-tool host adapter (codex, pi, opencode, openclaw) routes through the shared primitive `compactBashResult` in [src/core/integrations/compact-bash-result.ts](src/core/integrations/compact-bash-result.ts). New host behavior belongs in `src/core/`, not in an adapter. Pre-tool rewriters (claude-code, codebuddy, cursor, vscode-copilot) funnel commands through `tokenjuice wrap` and shared helpers in [src/hosts/shared/pre-tool-wrap.ts](src/hosts/shared/pre-tool-wrap.ts). When adding or changing a host, see [docs/integration-playbook.md](docs/integration-playbook.md) for the install/doctor/uninstall checklist and update the hardcoded host list in [src/cli/main.ts](src/cli/main.ts) accordingly.
+Post-tool adapters that can replace shell output (codex, pi, opencode, openclaw, and other hook-based hosts) route through the shared primitive `compactBashResult` in [src/core/integrations/compact-bash-result.ts](src/core/integrations/compact-bash-result.ts). New compaction behavior belongs in `src/core/`, not in an adapter. Pre-tool rewriters (codebuddy, cursor, vscode-copilot, opt-in claude-code, and similar hosts) funnel commands through `token-glace wrap` / `tokenjuice wrap`. Shared wrap helpers live in [src/hosts/shared/pre-tool-wrap.ts](src/hosts/shared/pre-tool-wrap.ts); some hosts implement the same wrap locally. When adding or changing a host, see [docs/integration-playbook.md](docs/integration-playbook.md) for the install/doctor/uninstall checklist and update the hardcoded host list in [src/cli/main.ts](src/cli/main.ts).
 
 ## Testing Guidelines
 
@@ -44,7 +44,11 @@ This repo uses Vitest in Node (`vitest.config.ts`). Add or update tests with eve
 
 Host tests read environment variables (`CODEX_HOME`, `CLAUDE_CONFIG_DIR`, `CURSOR_HOME`, `PI_CODING_AGENT_DIR`, `OPENCODE_CONFIG_DIR`, `TOKENJUICE_CURSOR_SHELL`, `SHELL`, `HOME`, `PATH`, `process.platform`). Any new host suite must snapshot and restore them; follow the existing files in [test/hosts/](test/hosts/) as the pattern.
 
-For non-trivial code changes, run `$autoreview` or `.agents/skills/autoreview/scripts/autoreview --mode branch --base origin/main` before handoff and address accepted/actionable findings.
+For non-trivial code changes, run `.agents/skills/autoreview/scripts/autoreview --mode auto` before handoff and address accepted/actionable findings.
+
+## Brigade work loop
+
+Start a session with `brigade work brief --target .`. Run checks through `brigade work verify run --target . --command <TEST>` so the exit code is stored as a receipt. Capture the outcome against the skill or card that did the work only when the outcome ledger is healthy. Finish durable knowledge with a memory handoff. A corrupt or half-fed ledger is not a working capture path; inspect it with `brigade outcome doctor` before anyone repairs it.
 
 ## Further reading
 
@@ -66,7 +70,7 @@ Releases are tag-driven and should stay aligned with `package.json`.
 2. Run `pnpm release:local` to verify tests, build output, release tarball, checksums, and Homebrew formula generation.
 3. Commit the version bump and any required workflow fixes to `main`, then push `main`.
 4. Create and push an annotated tag: `git tag -a v0.6.0 -m "v0.6.0"` and `git push origin v0.6.0`.
-5. Watch the `Release` GitHub Actions workflow and confirm the GitHub release is published with the `.tar.gz`, `.deb`, `.rpm`, `sha256sums.txt`, and `tokenjuice.rb` assets.
+5. Watch the `Release` GitHub Actions workflow and confirm the GitHub release is published with the `.tar.gz`, `.deb`, `.rpm`, `sha256sums.txt`, and `token-glace.rb` assets.
 6. Confirm the `homebrew-tap.yml` sync workflow succeeds and that `vincentkoc/tap` points at the new tarball and SHA.
 
 If a release tag was pushed against a broken workflow, fix `main`, delete and recreate the tag, then rerun the release from the corrected commit.
