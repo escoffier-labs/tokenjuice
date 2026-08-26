@@ -22,6 +22,14 @@ describe("Token Glace branding", () => {
     });
   });
 
+  it("requires a supported Node runtime", async () => {
+    const packageJson = JSON.parse(await readFile("package.json", "utf8")) as {
+      engines?: { node?: string };
+    };
+
+    expect(packageJson.engines?.node).toBe(">=22.12.0");
+  });
+
   it("presents Token Glace in the README without the old juicebox emoji", async () => {
     const readme = await readFile("README.md", "utf8");
 
@@ -30,5 +38,24 @@ describe("Token Glace branding", () => {
     expect(readme).not.toContain("docs/assets/tokenjuice-social-preview.jpg");
     expect(readme).toContain("`token-glace --help`");
     expect(readme).not.toContain("\u{1F9C3}");
+  });
+
+  it("runs required pull_request checks on every path", async () => {
+    const ci = await readFile(".github/workflows/ci.yml", "utf8");
+    const pullRequest = ci.match(/^  pull_request:\s*\n((?: {4}.*\n?)*)/m);
+
+    expect(pullRequest).not.toBeNull();
+    expect(pullRequest?.[1] ?? "").not.toMatch(/^\s+(?:paths|paths-ignore):/m);
+  });
+
+  it("takes the pnpm version from package.json packageManager", async () => {
+    const packageJson = JSON.parse(await readFile("package.json", "utf8")) as {
+      packageManager?: string;
+    };
+    const ci = await readFile(".github/workflows/ci.yml", "utf8");
+
+    expect(packageJson.packageManager).toBe("pnpm@10.34.5");
+    expect(ci).toContain("pnpm/action-setup@v6.0.10");
+    expect(ci).not.toMatch(/^\s+version:\s+/m);
   });
 });

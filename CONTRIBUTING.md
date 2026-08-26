@@ -1,6 +1,6 @@
-# Contributing to tokenjuice
+# Contributing to Token Glace
 
-tokenjuice is a deterministic output compactor for terminal-heavy agent workflows. This repository is a fork of [vincentkoc/tokenjuice](https://github.com/vincentkoc/tokenjuice) by Vincent Koc, used and extended under the MIT license. Patches are welcome here. Before you start, please skim this file so we both spend time on the right things.
+Token Glace is a deterministic output compactor for terminal-heavy agent workflows. This repository is a fork of [vincentkoc/tokenjuice](https://github.com/vincentkoc/tokenjuice) by Vincent Koc, used and extended under the MIT license. Patches are welcome here. Before you start, please skim this file so we both spend time on the right things.
 
 ## Upstream first, when it fits
 
@@ -28,9 +28,11 @@ Most of tokenjuice (the reducer engine, the host integration matrix, the CLI sur
 
 ## Local dev
 
+Requires Node >=22.12.0 and pnpm 10.34.5 via Corepack.
+
 ```bash
-git clone https://github.com/escoffier-labs/tokenjuice.git
-cd tokenjuice
+git clone https://github.com/escoffier-labs/token-glace.git
+cd token-glace
 pnpm install
 pnpm build
 pnpm verify        # lint + circular check + typecheck + tests
